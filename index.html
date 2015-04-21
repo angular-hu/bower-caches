@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>angular-hu-caches by angular-hu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">angular-hu-caches</h1>
+      <h2 class="project-tagline">LocalStorage and SessionStorage angular cache with expiration and size/length - httpu.caches</h2>
+      <a href="https://github.com/angular-hu/bower-caches" class="btn">View on GitHub</a>
+      <a href="https://github.com/angular-hu/bower-caches/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/angular-hu/bower-caches/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h2>
+<a id="httpucaches" class="anchor" href="#httpucaches" aria-hidden="true"><span class="octicon octicon-link"></span></a>httpu.caches</h2>
+
+<p>Factory, api compatible with <a href="https://docs.angularjs.org/api/ng/service/%24cacheFactory"><code>$cacheFactory</code></a>, that creates <a href="https://github.com/jmendiara/serialized-lru-cache">LRU caches</a> with support for:</p>
+
+<ul>
+<li>Serialization to storage (<code>storage</code>) example: <code>localStorage</code>, <code>sessionStorage</code>
+</li>
+<li>Entries expiration (<code>maxAge</code>) example: 60 seconds</li>
+<li>Custom serialization/compression of values (<code>serializer</code>) example: <a href="https://github.com/pieroxy/lz-string"><code>lz-string</code></a> compression</li>
+<li>
+<p>Limited number of entries in the cache (<code>capacity</code>) example: 10 entries</p>
+
+<p>OR</p>
+</li>
+<li><p>Limited length of cache (<code>maxLength</code>) example: 2 Megabytes</p></li>
+</ul>
+
+<p>The returned cache is again API compatible with angular <a href="https://docs.angularjs.org/api/ng/type/%24cacheFactory.Cache"><code>$cacheFactory.Cache</code></a></p>
+
+<p>Characteristics:</p>
+
+<ul>
+<li>Items are not pro-actively pruned out as they age, but if you try to get an item that is too old,
+it'll drop it and return <code>undefined</code> instead of giving it to you. A convenience <code>cache.prune()</code> method
+is exported to allow you to prune the cache whenever you want</li>
+<li>If you put more stuff in it than it can handle, then least used items items will fall out.</li>
+<li>If you try to put an oversized thing in it, then it'll fall out right away.</li>
+<li>Adaptation to change: serialized data is agnostic of the creation options, and you can update
+your code to use a cache with different options and still use the cached data in the storage
+(as long as you keep the same serializaration implementation)</li>
+</ul>
+
+<h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p>Get it from <a href="http://bower.io/">bower</a> or directly download it.</p>
+
+<div class="highlight highlight-sh"><pre>bower install --save angular-hu-caches</pre></div>
+
+<p>Add the dependencies to the HTML</p>
+
+<div class="highlight highlight-html"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>bower_components/serialized-lru-cache/lib/lru-cache.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>bower_components/angular-hu-cacherp/caches.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<p>Add the <code>httpu.caches</code> dependency to your App Module</p>
+
+<div class="highlight highlight-js"><pre>angular.module(<span class="pl-s"><span class="pl-pds">'</span>MyApp<span class="pl-pds">'</span></span>, [<span class="pl-s"><span class="pl-pds">'</span>httpu.caches<span class="pl-pds">'</span></span>]);</pre></div>
+
+<p>The <code>huCacheSerializableFactory</code> dependency is now available</p>
+
+<h3>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<div class="highlight highlight-js"><pre><span class="pl-c">//Direct replacement of $cacheFactory, in localStorage</span>
+<span class="pl-c">//Creates a cache of 50 entries saved to localStorage</span>
+<span class="pl-k">var</span> cache <span class="pl-k">=</span> huCacheSerializableFactory(<span class="pl-s"><span class="pl-pds">'</span>myCache<span class="pl-pds">'</span></span>, {
+  capacity<span class="pl-k">:</span> <span class="pl-c1">50</span>
+});
+
+<span class="pl-c">//Cache whose 50 entries expire after 2 minutes, in sessionStorage</span>
+<span class="pl-k">var</span> cache <span class="pl-k">=</span> huCacheSerializableFactory(<span class="pl-s"><span class="pl-pds">'</span>myCache<span class="pl-pds">'</span></span>, {
+  capacity<span class="pl-k">:</span> <span class="pl-c1">50</span>,
+  maxAge<span class="pl-k">:</span> <span class="pl-c1">2</span> <span class="pl-k">*</span> <span class="pl-c1">60</span> <span class="pl-k">*</span> <span class="pl-c1">1000</span>, <span class="pl-c">//2 minutes in milliseconds</span>
+  storage<span class="pl-k">:</span> $<span class="pl-c1">window</span>.sessionStorage
+});
+
+<span class="pl-c">//2 MB cache whose entries expire after 10 minutes, in localStorage</span>
+<span class="pl-k">var</span> cache <span class="pl-k">=</span> huCacheSerializableFactory(<span class="pl-s"><span class="pl-pds">'</span>myCache<span class="pl-pds">'</span></span>, {
+  maxLength<span class="pl-k">:</span> <span class="pl-c1">2</span> <span class="pl-k">*</span> <span class="pl-c1">1024</span> <span class="pl-k">*</span> <span class="pl-c1">1024</span>, <span class="pl-c">// 2MB of chars</span>
+  maxAge<span class="pl-k">:</span> <span class="pl-c1">10</span> <span class="pl-k">*</span> <span class="pl-c1">60</span> <span class="pl-k">*</span> <span class="pl-c1">1000</span> <span class="pl-c">//10 minutes in milliseconds</span>
+});
+
+<span class="pl-c">//1MB cache with compression in local storage</span>
+<span class="pl-c">//You must create a dependency with the folling API</span>
+angular.module(<span class="pl-s"><span class="pl-pds">'</span>myApp<span class="pl-pds">'</span></span>).factory(<span class="pl-s"><span class="pl-pds">'</span>myCompressSerializer<span class="pl-pds">'</span></span>, <span class="pl-k">function</span>(<span class="pl-smi">$window</span>) {
+  <span class="pl-c">//add lz-string module to your included scripts</span>
+  <span class="pl-c">//https://github.com/pieroxy/lz-string</span>
+  <span class="pl-k">return</span> {
+     <span class="pl-en">stringify</span>: <span class="pl-k">function</span>(<span class="pl-smi">obj</span>) {
+       <span class="pl-k">return</span> $<span class="pl-c1">window</span>.LZString.compress(JSON.stringify(obj));
+     },
+     <span class="pl-en">parse</span>: <span class="pl-k">function</span>(<span class="pl-smi">str</span>) {
+       <span class="pl-k">return</span> JSON.<span class="pl-c1">parse</span>($<span class="pl-c1">window</span>.LZString.decompress(str));
+     }
+  };
+});
+
+<span class="pl-k">var</span> cache <span class="pl-k">=</span> huCacheSerializableFactory(<span class="pl-s"><span class="pl-pds">'</span>myCache<span class="pl-pds">'</span></span>, {
+  maxLength<span class="pl-k">:</span> <span class="pl-c1">1</span> <span class="pl-k">*</span> <span class="pl-c1">1024</span> <span class="pl-k">*</span> <span class="pl-c1">1024</span>, <span class="pl-c">// 1MB of compressed chars</span>
+  serializer<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">'</span>myCompressSerializer<span class="pl-pds">'</span></span>
+});
+</pre></div>
+
+<h3>
+<a id="use-cases" class="anchor" href="#use-cases" aria-hidden="true"><span class="octicon octicon-link"></span></a>Use cases</h3>
+
+<ul>
+<li>You want to save caches to a storage to allow returning users to read from them</li>
+<li>You want to limit the amount of data stored instead of the number of requests</li>
+<li>You want entries to expire after some time</li>
+<li>You want to compress the data to allow more request to be cached in the 5MB storage that the browsers are giving</li>
+<li>You want to resize your caches with new options for returning visitors</li>
+</ul>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>LICENSE</h2>
+
+<p>The MIT License (<a href="LICENSE">MIT</a>)</p>
+
+<p>Copyright (c) 2015 Telefónica I+D - <a href="http://www.tid.es">http://www.tid.es</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/angular-hu/bower-caches">angular-hu-caches</a> is maintained by <a href="https://github.com/angular-hu">angular-hu</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
