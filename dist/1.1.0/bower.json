@@ -1,0 +1,35 @@
+{
+  "name": "angular-hu-caches",
+  "version": "1.1.0",
+  "authors": [
+    "Javier Mendiara Cañardo <javier.mendiaracanardo@telefonica.com>"
+  ],
+  "description": "Angular cache that serializes to localStorage, with length, age and compression support",
+  "main": "caches.js",
+  "keywords": [
+    "angular",
+    "utilities",
+    "cache",
+    "lrucache",
+    "$cacheFactory",
+    "http",
+    "$http",
+    "localStorage",
+    "sessionStorage",
+    "compression"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular-hu/angular-hu"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/angular-hu/angular-hu",
+  "ignore": [
+    "index.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "angular": ">= 1.2.7",
+    "serialized-lru-cache": "~3.1.0"
+  }
+}
